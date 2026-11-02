@@ -221,11 +221,17 @@ window.DADOS = {
 > O "Perfil dos respondentes" (donut) mostra até 4 categorias direto; com 5+ agrupa o excedente
 > em "Outros". Para a Colônia, o perfil foi a **turma** (faixa etária), não funcionário/dependente.
 
-> **Botão "Gerar PDF" (versão de impressão):** já vem pronto em `assets/dashboard.css`
+> **Botão "Gerar PDF" (relatório executivo):** já vem pronto em `assets/dashboard.css`
 > (`@media print`, A4 paisagem) e `assets/dashboard.js`. Como o `index.html` do evento é
 > copiado da Festa das Crianças, o botão (`<button id="gerarPdf">` no hero) acompanha de graça —
-> **não precisa configurar nada por evento.** Ao imprimir, o painel abre todos os comentários e os
-> blocos "De onde vem este dado" por extenso, e esconde botões/filtros/busca.
+> **não precisa configurar nada por evento.** O PDF é um **relatório limpo de ~2 páginas**: logo,
+> KPIs, tabela de médias por pergunta, perfil, prioridades e ranking de temas. **NÃO** inclui a
+> caixa de comentários nem os painéis "De onde vem" (eles ficam só na tela). O layout de impressão
+> é todo CSS; o JS só abre a tabela de médias e carimba a data no rodapé.
+> **Dica p/ eventos novos:** se quiser que o card de prioridade mostre uma "Ação recomendada" no
+> PDF (como na Festa das Crianças), inclua um campo `"acao"` em cada objeto de `temas` no `dados.js`
+> (ex.: `{ "tema": "Filas", "n": 249, "acao": "Abrir mais caixas nos horários de pico." }`).
+> Sem `acao`, o card mostra só o tema e o nº de menções (sem rótulo vazio).
 
 ### Passo 3 — Criar a pasta e o index.html do evento
 1. Crie a pasta `eventos/<slug>/`.

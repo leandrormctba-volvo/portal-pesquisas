@@ -188,11 +188,15 @@ addEventListener("load", () => scrollTo(0, 0));
 
   $("#prioridades").innerHTML = D.temas.slice(0, 3).map((t, i) => {
     const comentariosTema = D.comentarios.filter((c) => c.temas.includes(t.tema));
-    return '<div class="pcard p' + (i + 1) + '"><div class="rank">' + (i + 1) + "</div>" +
+    // ação específica do dado do evento (t.acao) ou do dicionário; se não houver, marca "sem-acao"
+    // (no PDF o rótulo "Ação recomendada" some quando não há ação real, para não ficar vazio)
+    const acaoReal = t.acao || acoes[t.tema] || "";
+    const temAcao = !!acaoReal;
+    return '<div class="pcard p' + (i + 1) + (temAcao ? "" : " sem-acao") + '"><div class="rank">' + (i + 1) + "</div>" +
     '<div class="tema">' + t.tema + "</div>" +
     '<div class="mencoes">' + t.n + " menções nos comentários</div>" +
     '<div class="acao-rot">Ação recomendada</div>' +
-    '<div class="acao">' + (acoes[t.tema] || "Tema recorrente nos comentários abertos.") + "</div>" +
+    '<div class="acao">' + (acaoReal || "Tema recorrente nos comentários abertos.") + "</div>" +
     (citas[t.tema] ? '<div class="cita">' + citas[t.tema].replace(/^“/, "").replace(/”/g, "").replace(/“/g, "") + "</div>" : "") +
     '<div class="ver">De onde vem este dado ' + SETA2 + "</div>" +
     '<div class="painel-origem"><div class="painel-origem-in-wrap"><div class="painel-origem-in">' +
@@ -404,36 +408,38 @@ addEventListener("load", () => scrollTo(0, 0));
     aoTopo.addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
   }
 
-  /* ---------- gerar PDF (versão de impressão em paisagem) ----------
-     Antes de imprimir: mostra TODOS os comentários (sem o limite de lote) e
-     abre a tabela de perguntas. Depois de imprimir, restaura a tela normal. */
+  /* ---------- gerar PDF (relatório executivo em paisagem) ----------
+     O layout de impressão é 100% CSS (@media print): mostra só o resumo
+     (KPIs, média por pergunta, perfil, prioridades, temas) e esconde a
+     caixa de comentários e os painéis de origem. Aqui só preparamos a
+     tabela de perguntas (que vira o quadro de médias) e carimbamos a
+     data de geração no rodapé. */
   const btnPdf = $("#gerarPdf");
   if (btnPdf) {
     const tabela = document.querySelector("details.tabela");
-    let estadoAntes = null;
+
+    // linha de data no rodapé (aparece só na impressão, via CSS)
+    const rodape = document.querySelector("footer .wrap") || document.querySelector("footer");
+    let linhaData = null;
+    if (rodape) {
+      linhaData = document.createElement("div");
+      linhaData.className = "pdf-rodape-data";
+      rodape.appendChild(linhaData);
+    }
 
     function prepararImpressao() {
-      if (estadoAntes) return;  // já preparado (evita salvar estado já alterado)
-      estadoAntes = { visiveis: visiveis, tabelaAberta: tabela ? tabela.open : null };
-      visiveis = filtrados.length;  // imprime todos os comentários filtrados
-      pinta();
-      if (tabela) tabela.open = true;
-    }
-    function restaurarTela() {
-      if (!estadoAntes) return;
-      visiveis = estadoAntes.visiveis;
-      pinta();
-      if (tabela && estadoAntes.tabelaAberta !== null) tabela.open = estadoAntes.tabelaAberta;
-      estadoAntes = null;
+      if (tabela) tabela.open = true;  // garante a tabela de médias montada
+      if (linhaData) {
+        const hoje = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+        linhaData.textContent = D.entidade + "  ·  Relatório gerado em " + hoje;
+      }
     }
 
     btnPdf.addEventListener("click", () => {
       prepararImpressao();
-      // dá um tiquinho pro DOM atualizar antes de abrir o diálogo de impressão
       setTimeout(() => window.print(), 60);
     });
-    // navegadores que usam Ctrl+P direto também pegam o preparo/restauro
+    // Ctrl+P direto também prepara o rodapé/tabela
     addEventListener("beforeprint", prepararImpressao);
-    addEventListener("afterprint", restaurarTela);
   }
 })();

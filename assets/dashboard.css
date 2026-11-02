@@ -370,78 +370,131 @@ footer { margin-top: 48px; border-top: 1px solid var(--hairline); padding: 28px 
 }
 
 /* =====================================================================
-   VERSÃO DE IMPRESSÃO / PDF — paisagem (A4 landscape)
-   Abre todos os comentários e painéis "De onde vem" por extenso,
-   esconde o que é só de tela (cortina, botões, filtros, busca, tooltip).
+   VERSÃO DE IMPRESSÃO / PDF — relatório executivo limpo (A4 paisagem)
+   Filosofia: NÃO é a tela espremida. É um documento impresso.
+   - Só o essencial: KPIs, média por pergunta (tabela), perfil, prioridades, temas.
+   - FORA do PDF: caixa de comentários, painéis "De onde vem", acordeões,
+     filtros, busca, botões e tudo que é interação de tela.
+   - Informação espaçada, sem sobreposição, com quebras de página limpas.
    ===================================================================== */
-@page { size: A4 landscape; margin: 11mm 12mm; }
+@page { size: A4 landscape; margin: 12mm 13mm 14mm; }
 
 @media print {
   :root { color-scheme: light; }
-  /* força impressão fiel das cores da marca */
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
-  html, body { background: #fff !important; }
-  body { font-size: 11px; }
+  html, body { background: #fff !important; color: var(--ink) !important; }
+  body { font-size: 10.5px; line-height: 1.45; }
 
-  /* some com tudo que é só de tela */
+  /* --- esconde tudo que é só de tela OU que polui o relatório --- */
   #cortina, .voltar-portal, .gerar-pdf, #aoTopo, #tip,
-  .filtros, .busca-wrap, #btnMais, .ver-kpi, .ver, .termo-seta,
-  .tema-row .seta, details.tabela summary { display: none !important; }
-
-  body.cortina-ativa { overflow: visible !important; }
-
-  /* o hero vira um cabeçalho compacto da folha */
-  .hero { padding: 16px 0 18px !important; background: var(--navy) !important; -webkit-print-color-adjust: exact; }
-  .hero-logo { height: 46px !important; margin-bottom: 12px !important; filter: none !important; }
-  .hero h1 { font-size: 22px !important; }
-  .hero .overline { margin-bottom: 8px !important; }
-  .hero .sub { margin-top: 10px !important; font-size: 11px !important; opacity: 1 !important; }
-
-  main.wrap, .wrap { max-width: none !important; width: 100% !important; padding: 0 !important; }
-  main { margin: 0 !important; }
-  section { margin: 10px 0 0 !important; }
-
-  /* nada de animação de entrada escondendo conteúdo na hora de imprimir */
-  .reveal, .kpis { opacity: 1 !important; transform: none !important; }
-
-  /* cartões sem sombra, borda fina, sem quebrar no meio */
-  .card, .kpi, .pcard, .termo-item, .tema-item {
-    box-shadow: none !important; border: 1px solid var(--hairline) !important;
-    break-inside: avoid; page-break-inside: avoid;
+  .filtros, .busca-wrap, #btnMais, .contagem, #fContagem,
+  .ver-kpi, .ver, .termo-seta, .tema-row .seta,
+  .painel-origem, details.tabela summary,
+  .legenda,                                   /* legenda das barras (a tabela já diz tudo) */
+  #perguntas,                                 /* barras coloridas -> troco pela tabela limpa */
+  .tema-painel,                               /* acordeão de comentários por tema -> fora */
+  .com-lista, .mais-btn,                      /* caixa de comentários inteira -> fora */
+  section:last-of-type {                      /* a seção "Todos os comentários" inteira -> fora */
+    display: none !important;
   }
 
-  /* KPIs em 4 colunas compactas */
-  .kpis { gap: 8px !important; margin-top: 10px !important; }
-  .kpi { padding: 12px !important; }
-  .kpi .valor { font-size: 24px !important; }
+  body.cortina-ativa { overflow: visible !important; }
+  .reveal, .kpis { opacity: 1 !important; transform: none !important; }
 
-  /* mantém o duo lado a lado (não empilhar) para caber na paisagem */
-  .duo { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+  /* ---------- cabeçalho da folha (hero compacto, não berrante) ---------- */
+  .hero {
+    padding: 0 0 14px !important; margin-bottom: 4px !important;
+    background: #fff !important; color: var(--ink) !important;
+    border-bottom: 2px solid var(--navy) !important; text-align: left !important;
+  }
+  .hero .wrap { display: flex !important; align-items: center !important; gap: 16px !important;
+    max-width: none !important; width: 100% !important; padding: 0 !important; }
+  .hero-logo { height: 40px !important; margin: 0 !important; filter: none !important;
+    content: url("img/logo-teal.png"); }  /* logo teal sobre fundo branco */
+  .hero .overline { color: var(--ink-2) !important; opacity: 1 !important; margin: 0 0 2px !important;
+    font-size: 9.5px !important; letter-spacing: .28em !important; }
+  .hero h1 { color: var(--navy) !important; font-size: 20px !important; line-height: 1.1 !important; }
+  .hero .sub { color: var(--ink-2) !important; opacity: 1 !important; margin: 3px 0 0 !important;
+    font-size: 10.5px !important; text-align: left !important; max-width: none !important; }
+  .hero-bg, .hero-particulas { display: none !important; }
 
-  /* painéis "De onde vem este dado": sempre abertos e por extenso */
-  .painel-origem { display: block !important; max-height: none !important; height: auto !important;
-    opacity: 1 !important; overflow: visible !important; margin-top: 8px !important; }
-  .painel-origem-in-wrap { max-height: none !important; height: auto !important; overflow: visible !important; }
-  .painel-origem-in { transform: none !important; opacity: 1 !important; }
+  main, main.wrap, .wrap { max-width: none !important; width: 100% !important;
+    margin: 0 !important; padding: 0 !important; }
+  section { margin: 0 0 10px !important; break-inside: avoid; page-break-inside: avoid; }
 
-  /* tabela de perguntas sempre visível no PDF (o resumo detalhado) */
-  details.tabela { display: block !important; }
-  details.tabela table { display: table !important; font-size: 10px !important; }
-  details.tabela[open] > *, details.tabela > table { display: table !important; }
+  .sec-head { margin-bottom: 7px !important; }
+  .sec-head h2 { font-size: 13px !important; color: var(--navy) !important; }
+  .sec-head p { font-size: 9.5px !important; color: var(--ink-2) !important; margin-top: 1px !important; }
 
-  /* acordeão de temas aberto por extenso */
-  .tema-painel { display: block !important; max-height: none !important; height: auto !important;
-    opacity: 1 !important; overflow: visible !important; }
-  .tema-painel-in { transform: none !important; opacity: 1 !important; }
+  /* cartões: borda fina, sem sombra, nunca quebram no meio */
+  .card, .kpi, .pcard {
+    box-shadow: none !important; border: 1px solid var(--hairline) !important;
+    border-radius: 8px !important; break-inside: avoid; page-break-inside: avoid;
+  }
 
-  /* caixa de comentários: imprime todos (o JS tira o limite antes de imprimir) */
-  .com-lista { display: block !important; }
-  .com-item { break-inside: avoid; page-break-inside: avoid; border: 1px solid var(--hairline) !important;
-    box-shadow: none !important; margin-bottom: 6px !important; padding: 8px 10px !important; font-size: 10.5px !important; }
+  /* ---------- KPIs: faixa de 4 números, limpa ---------- */
+  .kpis { display: grid !important; grid-template-columns: repeat(4, 1fr) !important;
+    gap: 9px !important; margin: 4px 0 0 !important; }
+  .kpi { padding: 11px 13px !important; }
+  .kpi .ico { opacity: .9 !important; }
+  .kpi .rotulo { font-size: 9px !important; letter-spacing: .12em !important; }
+  .kpi .valor { font-size: 23px !important; margin: 2px 0 !important; }
+  .kpi .apoio { font-size: 9px !important; color: var(--ink-2) !important; }
 
-  .sec-head h2 { font-size: 15px !important; }
+  /* ---------- duo (média por pergunta + perfil) lado a lado ---------- */
+  .duo { display: grid !important; grid-template-columns: 1.15fr .85fr !important;
+    gap: 12px !important; align-items: start !important; }
+  .card { padding: 13px 15px !important; }
 
-  footer { margin-top: 18px !important; padding: 12px 0 0 !important; }
-  .footer-logo { height: 30px !important; }
+  /* média por pergunta: a TABELA limpa (não as barras) */
+  details.tabela { display: block !important; margin-top: 0 !important; border: 0 !important; }
+  details.tabela table { display: table !important; width: 100% !important; font-size: 9.5px !important; }
+  details.tabela th { background: var(--surface-2) !important; color: var(--ink) !important;
+    font-weight: 700 !important; }
+  details.tabela th, details.tabela td { padding: 4px 6px !important; }
+
+  /* donut de perfil + legenda, bem distribuídos */
+  .donut-flex { display: flex !important; align-items: center !important; gap: 14px !important; }
+  .donut-box { flex: 0 0 auto !important; }
+  #donut { width: 130px !important; height: 130px !important; }
+  .donut-leg { font-size: 9.5px !important; }
+
+  /* ---------- prioridades: 3 cards, limpos (sem painel de origem) ---------- */
+  .prio { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
+  .pcard { padding: 11px 13px !important; }
+  .pcard .rank { width: 22px !important; height: 22px !important; font-size: 12px !important; }
+  .pcard .tema { font-size: 11.5px !important; }
+  .pcard .mencoes { font-size: 9px !important; }
+  .pcard .acao-rot { font-size: 8.5px !important; }
+  .pcard .acao { font-size: 9.5px !important; }
+  .pcard .cita { font-size: 9px !important; }
+  /* se não há ação específica para o tema, não imprime o rótulo vazio */
+  .pcard.sem-acao .acao-rot, .pcard.sem-acao .acao { display: none !important; }
+
+  /* ---------- temas recorrentes: ranking simples (sem acordeão) ---------- */
+  #temas { column-count: 2 !important; column-gap: 20px !important; }
+  .tema-item { break-inside: avoid; border: 0 !important; border-bottom: 1px solid var(--grid) !important;
+    border-radius: 0 !important; }
+  .tema-row { padding: 4px 0 !important; cursor: default !important; }
+  .tlabel { font-size: 9.5px !important; }
+  .tn { font-size: 9.5px !important; }
+
+  /* termômetro (se estiver na mesma seção dos temas) fica, mas sem painel */
+  .termo-item { border: 1px solid var(--hairline) !important; box-shadow: none !important;
+    break-inside: avoid; }
+  .termo-item .det, .termo-val { font-size: 9.5px !important; }
+
+  /* ---------- rodapé: logo + data (preenchida pelo JS) ----------
+     Fica junto do conteúdo (não force quebra), para não gerar página só com o rodapé. */
+  footer { margin-top: 6px !important; padding: 6px 0 0 !important;
+    border-top: 1px solid var(--hairline) !important; text-align: center !important;
+    break-before: avoid !important; page-break-before: avoid !important; }
+  .footer-logo { height: 22px !important; }
+  .footer-logo-escuro { display: none !important; }
+  .pdf-rodape-data { display: block !important; font-size: 8.5px !important;
+    color: var(--ink-3) !important; margin-top: 4px !important; }
 }
+
+/* fora da impressão, a linha de data do rodapé do PDF fica escondida */
+.pdf-rodape-data { display: none; }
