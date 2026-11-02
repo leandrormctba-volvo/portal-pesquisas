@@ -352,3 +352,96 @@ footer { margin-top: 48px; border-top: 1px solid var(--hairline); padding: 28px 
   :root:not([data-theme="light"]) .footer-logo-claro { display: none; }
   :root:not([data-theme="light"]) .footer-logo-escuro { display: inline-block; }
 }
+
+/* ---------- botão Gerar PDF (gêmeo do voltar, no canto direito do hero) ---------- */
+.gerar-pdf {
+  position: absolute; top: 28px; right: 34px; z-index: 4;
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid rgba(255,255,255,.28); background: rgba(255,255,255,.08); color: #fff;
+  border-radius: 999px; padding: 7px 15px 7px 13px; font: inherit; font-size: 12.5px; font-weight: 500;
+  cursor: pointer; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: background .2s, border-color .2s;
+}
+.gerar-pdf:hover { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.5); }
+.gerar-pdf svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+@media (max-width: 560px) {
+  .gerar-pdf span { display: none; }
+  .gerar-pdf { padding: 7px 11px; }
+}
+
+/* =====================================================================
+   VERSÃO DE IMPRESSÃO / PDF — paisagem (A4 landscape)
+   Abre todos os comentários e painéis "De onde vem" por extenso,
+   esconde o que é só de tela (cortina, botões, filtros, busca, tooltip).
+   ===================================================================== */
+@page { size: A4 landscape; margin: 11mm 12mm; }
+
+@media print {
+  :root { color-scheme: light; }
+  /* força impressão fiel das cores da marca */
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  html, body { background: #fff !important; }
+  body { font-size: 11px; }
+
+  /* some com tudo que é só de tela */
+  #cortina, .voltar-portal, .gerar-pdf, #aoTopo, #tip,
+  .filtros, .busca-wrap, #btnMais, .ver-kpi, .ver, .termo-seta,
+  .tema-row .seta, details.tabela summary { display: none !important; }
+
+  body.cortina-ativa { overflow: visible !important; }
+
+  /* o hero vira um cabeçalho compacto da folha */
+  .hero { padding: 16px 0 18px !important; background: var(--navy) !important; -webkit-print-color-adjust: exact; }
+  .hero-logo { height: 46px !important; margin-bottom: 12px !important; filter: none !important; }
+  .hero h1 { font-size: 22px !important; }
+  .hero .overline { margin-bottom: 8px !important; }
+  .hero .sub { margin-top: 10px !important; font-size: 11px !important; opacity: 1 !important; }
+
+  main.wrap, .wrap { max-width: none !important; width: 100% !important; padding: 0 !important; }
+  main { margin: 0 !important; }
+  section { margin: 10px 0 0 !important; }
+
+  /* nada de animação de entrada escondendo conteúdo na hora de imprimir */
+  .reveal, .kpis { opacity: 1 !important; transform: none !important; }
+
+  /* cartões sem sombra, borda fina, sem quebrar no meio */
+  .card, .kpi, .pcard, .termo-item, .tema-item {
+    box-shadow: none !important; border: 1px solid var(--hairline) !important;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+
+  /* KPIs em 4 colunas compactas */
+  .kpis { gap: 8px !important; margin-top: 10px !important; }
+  .kpi { padding: 12px !important; }
+  .kpi .valor { font-size: 24px !important; }
+
+  /* mantém o duo lado a lado (não empilhar) para caber na paisagem */
+  .duo { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+
+  /* painéis "De onde vem este dado": sempre abertos e por extenso */
+  .painel-origem { display: block !important; max-height: none !important; height: auto !important;
+    opacity: 1 !important; overflow: visible !important; margin-top: 8px !important; }
+  .painel-origem-in-wrap { max-height: none !important; height: auto !important; overflow: visible !important; }
+  .painel-origem-in { transform: none !important; opacity: 1 !important; }
+
+  /* tabela de perguntas sempre visível no PDF (o resumo detalhado) */
+  details.tabela { display: block !important; }
+  details.tabela table { display: table !important; font-size: 10px !important; }
+  details.tabela[open] > *, details.tabela > table { display: table !important; }
+
+  /* acordeão de temas aberto por extenso */
+  .tema-painel { display: block !important; max-height: none !important; height: auto !important;
+    opacity: 1 !important; overflow: visible !important; }
+  .tema-painel-in { transform: none !important; opacity: 1 !important; }
+
+  /* caixa de comentários: imprime todos (o JS tira o limite antes de imprimir) */
+  .com-lista { display: block !important; }
+  .com-item { break-inside: avoid; page-break-inside: avoid; border: 1px solid var(--hairline) !important;
+    box-shadow: none !important; margin-bottom: 6px !important; padding: 8px 10px !important; font-size: 10.5px !important; }
+
+  .sec-head h2 { font-size: 15px !important; }
+
+  footer { margin-top: 18px !important; padding: 12px 0 0 !important; }
+  .footer-logo { height: 30px !important; }
+}

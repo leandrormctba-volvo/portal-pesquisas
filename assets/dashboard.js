@@ -403,4 +403,37 @@ addEventListener("load", () => scrollTo(0, 0));
     }, { passive: true });
     aoTopo.addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
   }
+
+  /* ---------- gerar PDF (versão de impressão em paisagem) ----------
+     Antes de imprimir: mostra TODOS os comentários (sem o limite de lote) e
+     abre a tabela de perguntas. Depois de imprimir, restaura a tela normal. */
+  const btnPdf = $("#gerarPdf");
+  if (btnPdf) {
+    const tabela = document.querySelector("details.tabela");
+    let estadoAntes = null;
+
+    function prepararImpressao() {
+      if (estadoAntes) return;  // já preparado (evita salvar estado já alterado)
+      estadoAntes = { visiveis: visiveis, tabelaAberta: tabela ? tabela.open : null };
+      visiveis = filtrados.length;  // imprime todos os comentários filtrados
+      pinta();
+      if (tabela) tabela.open = true;
+    }
+    function restaurarTela() {
+      if (!estadoAntes) return;
+      visiveis = estadoAntes.visiveis;
+      pinta();
+      if (tabela && estadoAntes.tabelaAberta !== null) tabela.open = estadoAntes.tabelaAberta;
+      estadoAntes = null;
+    }
+
+    btnPdf.addEventListener("click", () => {
+      prepararImpressao();
+      // dá um tiquinho pro DOM atualizar antes de abrir o diálogo de impressão
+      setTimeout(() => window.print(), 60);
+    });
+    // navegadores que usam Ctrl+P direto também pegam o preparo/restauro
+    addEventListener("beforeprint", prepararImpressao);
+    addEventListener("afterprint", restaurarTela);
+  }
 })();
