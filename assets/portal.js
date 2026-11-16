@@ -37,10 +37,14 @@ scrollTo(0, 0);
 
   // faixa de resumo no hero
   const totalResp = EV.reduce((a, e) => a + (Number(e.respostas) || 0), 0);
+  // média geral do portal = média simples das médias gerais de cada pesquisa (cada evento pesa igual)
+  const medias = EV.map((e) => parseFloat(String(e.media).replace(",", "."))).filter((m) => !isNaN(m));
+  const mediaPortal = medias.length ? medias.reduce((a, m) => a + m, 0) / medias.length : null;
   const stats = [
     { v: nf(EV.length), r: EV.length === 1 ? "Pesquisa" : "Pesquisas" },
     { v: nf(totalResp), r: "Respostas" },
   ];
+  if (mediaPortal != null) stats.push({ v: mediaPortal.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }), r: "Média geral" });
   document.getElementById("stats").innerHTML = stats.map((s) =>
     '<div class="s"><div class="v">' + s.v + '</div><div class="r">' + s.r + "</div></div>").join("");
   document.getElementById("conta").textContent = EV.length + (EV.length === 1 ? " evento" : " eventos");

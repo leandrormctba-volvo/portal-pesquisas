@@ -118,7 +118,7 @@ body.hero-in .hero .stats { transition-delay: .56s; }
 .hero .sub { margin: 20px auto 0; font-size: 15px; font-weight: 300; opacity: .82; max-width: 460px; line-height: 1.65; }
 
 /* faixa de resumo (stats) sobre o hero */
-.stats { max-width: 520px; margin: 42px auto 0; padding-top: 34px; position: relative;
+.stats { max-width: 640px; margin: 42px auto 0; padding-top: 34px; position: relative;
   display: flex; justify-content: center; align-items: stretch; gap: 0; }
 .stats::before { content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
   width: 90px; height: 1px; background: rgba(255,255,255,.2); }
@@ -126,6 +126,11 @@ body.hero-in .hero .stats { transition-delay: .56s; }
 .stats .s + .s { border-left: 1px solid rgba(255,255,255,.18); }
 .stats .s .v { font-size: 30px; font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; }
 .stats .s .r { font-size: 10.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; opacity: .72; margin-top: 5px; }
+@media (max-width: 480px) {
+  .stats .s { padding: 0 8px; }
+  .stats .s .v { font-size: 26px; }
+  .stats .s .r { font-size: 9.5px; letter-spacing: .1em; }
+}
 
 /* ---------- conteúdo ---------- */
 main { flex: 1; padding: 48px 0 20px; }
