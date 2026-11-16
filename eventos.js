@@ -51,6 +51,16 @@ window.EVENTOS = [
     icone: "floco",
   },
   {
+    titulo: "Torneio de Vôlei de Areia",
+    ano: "2026",
+    pasta: "eventos/torneio-volei-areia-2026",
+    data: "Abril de 2026",
+    ordem: 202604,
+    respostas: 16,
+    media: "9,48",
+    icone: "sol",
+  },
+  {
     titulo: "Colônia de Férias Verão",
     ano: "2026",
     pasta: "eventos/colonia-ferias-verao-2026",
