@@ -31,6 +31,16 @@ window.EVENTOS = [
     icone: "bandeira",
   },
   {
+    titulo: "Baile do Flashback",
+    ano: "2026",
+    pasta: "eventos/baile-flashback-2026",
+    data: "Agosto de 2026",
+    ordem: 202608,
+    respostas: 11,
+    media: "9,47",
+    icone: "festa",
+  },
+  {
     titulo: "Colônia de Férias Inverno",
     ano: "2026",
     pasta: "eventos/colonia-ferias-inverno-2026",
