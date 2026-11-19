@@ -215,6 +215,15 @@ window.DADOS = {
 };
 ```
 
+> **Recomendação Sim/Não:** se a pergunta "Você recomendaria?" for Sim/Não (e não nota), use
+> `recomendacao: { tipo: "simnao", sim, nao, n: sim+nao, pctSim, media: mediaGeral, pctPromotores: 0 }`.
+> O KPI vira "Recomendariam: X%". Se a pesquisa **não tem** pergunta de recomendação, use `n: 0` e o
+> KPI de recomendação simplesmente não aparece.
+> **Satisfação com rótulo próprio:** `satisfacao.rotulo` (ex.: "Satisfação com o workshop") troca o
+> título do KPI; sem ele, o padrão continua "Satisfação das crianças".
+> **Respostas de teste:** descarte linhas claramente de teste (ex.: ID 1 com texto sem sentido,
+> "jhjsajdhsj") e tire sobrenomes que aparecerem nos comentários.
+
 > **3º KPI flexível:** o dashboard mostra "Sem fila acima de 5 min" quando há dados de fila
 > (`filas.sim + filas.nao > 0`). Quando não há fila mas existe `satisfacao`, mostra
 > "Satisfação das crianças". Quando não há nenhum dos dois, esse KPI simplesmente não aparece.
