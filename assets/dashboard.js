@@ -50,15 +50,25 @@ addEventListener("load", () => scrollTo(0, 0));
   const perguntasOrd = [...D.perguntas].sort((a, b) => b.media - a.media);
   const origemMediaGeral = '<div class="po-tit">Média de cada quesito</div>' +
     poLinhas(perguntasOrd.map((p) => [p.label, fmt(p.media, 2)]));
-  const origemRecomendacao = '<div class="po-tit">Como se calcula a recomendação</div>' +
-    poLinhas([["Média das notas (5 a 10)", fmt(D.recomendacao.media, 2)], ["Deram nota 9 ou 10", fmt(D.recomendacao.pctPromotores, 1) + "%"], ["Total de respostas", D.recomendacao.n]]);
+  // recomendação: nota (padrão) ou pergunta Sim/Não (recomendacao.tipo = "simnao", com sim/nao/pctSim)
+  const recSimNao = D.recomendacao && D.recomendacao.tipo === "simnao";
+  const temRec = D.recomendacao && D.recomendacao.n > 0;
+  const origemRecomendacao = recSimNao
+    ? '<div class="po-tit">Você recomendaria o evento?</div>' +
+      poLinhas([["Sim", D.recomendacao.sim + " (" + fmt(D.recomendacao.pctSim, 1) + "%)"], ["Não", D.recomendacao.nao], ["Total de respostas", D.recomendacao.n]])
+    : '<div class="po-tit">Como se calcula a recomendação</div>' +
+      poLinhas([["Média das notas", fmt(D.recomendacao.media, 2)], ["Deram nota 9 ou 10", fmt(D.recomendacao.pctPromotores, 1) + "%"], ["Total de respostas", D.recomendacao.n]]);
   const origemAtencao = '<div class="po-tit">Avaliações nota ≤ 7 por quesito</div>' +
     poLinhas(perguntasOrd.filter((p) => p.dist.le7 > 0).sort((a, b) => b.dist.le7 - a.dist.le7).map((p) => [p.label, p.dist.le7]));
 
   const kpis = [
     { rotulo: "Média geral", valor: fmt(D.mediaGeral, 2), apoio: totalAval.toLocaleString("pt-BR") + " avaliações em " + D.perguntas.length + " quesitos", acc: "var(--navy)", ico: ICO.estrela, origem: origemMediaGeral },
-    { rotulo: "Recomendação", valor: fmt(D.recomendacao.media, 2), apoio: fmt(D.recomendacao.pctPromotores, 1) + "% deram nota 9 ou 10", acc: "var(--s2)", ico: ICO.polegar, origem: origemRecomendacao },
   ];
+  if (temRec && recSimNao) {
+    kpis.push({ rotulo: "Recomendariam", valor: fmt(D.recomendacao.pctSim, 1) + "%", apoio: D.recomendacao.sim + " de " + D.recomendacao.n + " responderam Sim", acc: "var(--s2)", ico: ICO.polegar, origem: origemRecomendacao });
+  } else if (temRec) {
+    kpis.push({ rotulo: "Recomendação", valor: fmt(D.recomendacao.media, 2), apoio: fmt(D.recomendacao.pctPromotores, 1) + "% deram nota 9 ou 10", acc: "var(--s2)", ico: ICO.polegar, origem: origemRecomendacao });
+  }
 
   // 3º KPI é flexível conforme o evento:
   // - se houver dados de fila -> "Sem fila acima de 5 min"
@@ -69,9 +79,10 @@ addEventListener("load", () => scrollTo(0, 0));
       poLinhas([["Não enfrentou fila", D.filas.nao + " (" + fmt(D.filas.pctSemFila, 1) + "%)"], ["Enfrentou fila", D.filas.sim + " (" + fmt(100 * D.filas.sim / (D.filas.sim + D.filas.nao), 1) + "%)"]]);
     kpis.push({ rotulo: "Sem fila acima de 5 min", valor: fmt(D.filas.pctSemFila, 1) + "%", apoio: D.filas.sim + " relatos de fila em " + (D.filas.sim + D.filas.nao) + " respostas", acc: "var(--good)", ico: ICO.relogio, origem: origemFila });
   } else if (D.satisfacao && D.satisfacao.n) {
-    const origemSat = '<div class="po-tit">Satisfação das crianças</div>' +
+    const rotSat = D.satisfacao.rotulo || "Satisfação das crianças";
+    const origemSat = '<div class="po-tit">' + rotSat + '</div>' +
       poLinhas([["Nota média", fmt(D.satisfacao.media, 2)], ["Deram nota 9 ou 10", fmt(D.satisfacao.pctAlta, 1) + "%"], ["Total de respostas", D.satisfacao.n]]);
-    kpis.push({ rotulo: "Satisfação das crianças", valor: fmt(D.satisfacao.media, 2), apoio: fmt(D.satisfacao.pctAlta, 1) + "% com nota 9 ou 10", acc: "var(--good)", ico: ICO.sorriso, origem: origemSat });
+    kpis.push({ rotulo: rotSat, valor: fmt(D.satisfacao.media, 2), apoio: fmt(D.satisfacao.pctAlta, 1) + "% com nota 9 ou 10", acc: "var(--good)", ico: ICO.sorriso, origem: origemSat });
   }
 
   kpis.push({ rotulo: "Avaliações nota ≤ 7", valor: fmt(100 * totalAtencao / totalAval, 1) + "%", apoio: totalAtencao + " avaliações: o ponto de atenção da edição", classe: "k-atencao", ico: ICO.alerta, origem: origemAtencao });
