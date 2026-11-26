@@ -11,6 +11,16 @@
 // (também aceita um emoji, mas o padrão do portal são os ícones de linha).
 window.EVENTOS = [
   {
+    titulo: "Ranking de Truco",
+    ano: "2026",
+    pasta: "eventos/ranking-truco-2026",
+    data: "Novembro de 2026",
+    ordem: 202611,
+    respostas: 14,
+    media: "9,50",
+    icone: "grafico",
+  },
+  {
     titulo: "Corrida AV",
     ano: "2026",
     pasta: "eventos/corrida-av-2026",
