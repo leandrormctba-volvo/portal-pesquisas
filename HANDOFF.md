@@ -252,15 +252,15 @@ window.DADOS = {
 
 ### Passo 4 — Adicionar o card no portal
 Edite `eventos.js` e acrescente um objeto no array `window.EVENTOS`. **A posição no
-array não importa** — o portal ordena sozinho pela data (campo `ordem`), do mais
-recente para o mais antigo. Objeto:
+array não importa** — o portal ordena os cards sozinho, **sempre em ordem alfabética**
+pelo título (pedido do dono). Objeto:
 ```js
 {
   titulo: "Arraiá",            // nome exibido no card
   ano: "2026",
   pasta: "eventos/arraia-2026", // caminho relativo à raiz (a pasta do evento)
   data: "Junho de 2026",        // texto exibido (mês e ano)
-  ordem: 202606,                // AAAAMM da data do evento (junho/2026 = 202606). Só p/ ordenar.
+  ordem: 202606,                // AAAAMM da data do evento (junho/2026 = 202606). Informativo; mantenha.
   respostas: 312,               // total (bate com dados.js)
   media: "9,41",                // média geral (string com vírgula)
   icone: "festa",               // ícone de linha do card: "balao" | "bandeira" | "sol" | "floco" | "festa" | "evento" | "grafico" | "estrela" (também aceita emoji)

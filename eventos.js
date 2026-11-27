@@ -1,10 +1,11 @@
 // Lista de eventos do portal de Pesquisas de Satisfação da Associação Volvo.
-// O portal ORDENA SOZINHO pela data (campo "ordem"), do mais recente para o mais antigo.
+// O portal ORDENA SOZINHO em ORDEM ALFABÉTICA pelo título (A → Z).
 // Então você pode adicionar um evento novo em qualquer posição da lista.
 //
 // Campos de cada evento:
 //   titulo, ano, pasta, data (texto exibido), respostas, media, icone
-//   ordem: número AAAAMM da data do evento (ex.: outubro/2026 = 202610). Serve só p/ ordenar.
+//   ordem: número AAAAMM da data do evento (ex.: outubro/2026 = 202610). Hoje só informativo
+//          (a ordem dos cards é alfabética); mantenha preenchido.
 // Ícone do card: nome de ícone de LINHA (sóbrio). Opções:
 //   "balao" (festa das crianças) | "bandeira" (arraiá/junina) | "sol" (verão) |
 //   "floco" (inverno) | "festa" | "evento" | "grafico" | "estrela"
