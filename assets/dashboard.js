@@ -217,6 +217,12 @@ addEventListener("load", () => scrollTo(0, 0));
       "</div></div></div></div>" +
     "</div>";
   }).join("");
+  // pesquisa sem nenhuma crítica/sugestão recorrente: mostra aviso em vez de deixar a área vazia
+  if (!D.temas.length) {
+    const aviso = '<p style="margin:0;opacity:.75">Nenhuma crítica ou sugestão recorrente apareceu nos comentários desta pesquisa.</p>';
+    $("#prioridades").innerHTML = '<div class="card">' + aviso + "</div>";
+    $("#temas").innerHTML = aviso;
+  }
   // clique abre/fecha o painel de origem de cada prioridade
   document.querySelectorAll("#prioridades .pcard").forEach((card) => {
     card.addEventListener("click", () => alternaCard(card, "#prioridades .pcard"));
